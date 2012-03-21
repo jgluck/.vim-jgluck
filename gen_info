@@ -1,0 +1,3 @@
+:runtime ./colortest.vim
+
+:he cterm-colors
