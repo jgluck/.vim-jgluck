@@ -42,6 +42,12 @@ call pathogen#infect()
  iab sunday     Sunday
  iab txit       textit
 
+"syntax ON
+syntax on
+
+"for osx
+set backspace=2 
+
 "spelling
 set spell
 " auto backups

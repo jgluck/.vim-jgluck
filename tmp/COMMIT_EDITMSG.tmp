@@ -2,156 +2,17 @@
 # Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 # On branch master
-#
-# Initial commit
-#
 # Changes to be committed:
-#   (use "git rm --cached <file>..." to unstage)
+#   (use "git reset HEAD <file>..." to unstage)
 #
-#	new file:   .netrwhist
-#	new file:   autoload/pathogen.vim
-#	new file:   bundle/nerdtree
-#	new file:   bundle/rainbow_parenthesis/.VimballRecord
-#	new file:   bundle/rainbow_parenthesis/autoload/rainbow_parenthsis.vim
-#	new file:   bundle/rainbow_parenthesis/doc/rainbow_parenthsis.txt
-#	new file:   bundle/rainbow_parenthesis/doc/tags
-#	new file:   bundle/rainbow_parenthesis/plugin/rainbow_parenthsis.vim
-#	new file:   bundle/rainbow_parenthesis/rainbow_parenthsis_options.vim
-#	new file:   bundle/vim-racket
-#	new file:   colors/3dglasses.vim
-#	new file:   colors/aiseered.vim
-#	new file:   colors/arizona.vim
-#	new file:   colors/astronaut.vim
-#	new file:   colors/asu1dark.vim
-#	new file:   colors/autumn.vim
-#	new file:   colors/autumn2.vim
-#	new file:   colors/autumnleaf.vim
-#	new file:   colors/baycomb.vim
-#	new file:   colors/bclear.vim
-#	new file:   colors/biogoo.vim
-#	new file:   colors/bluegreen.vim
-#	new file:   colors/borland.vim
-#	new file:   colors/breeze.vim
-#	new file:   colors/brookstream.vim
-#	new file:   colors/buttercream.vim
-#	new file:   colors/calmar256_dark.vim
-#	new file:   colors/calmar256_light.vim
-#	new file:   colors/camo.vim
-#	new file:   colors/candy.vim
-#	new file:   colors/candycode.vim
-#	new file:   colors/chela_light.vim
-#	new file:   colors/chocolateliquor.vim
-#	new file:   colors/dante.vim
-#	new file:   colors/darkblue2.vim
-#	new file:   colors/darkslategray.vim
-#	new file:   colors/darkspectrum.vim
-#	new file:   colors/dawn.vim
-#	new file:   colors/desert.vim
-#	new file:   colors/desert256.vim
-#	new file:   colors/desertEx.vim
-#	new file:   colors/dusk.vim
-#	new file:   colors/dw_blue.vim
-#	new file:   colors/dw_cyan.vim
-#	new file:   colors/dw_green.vim
-#	new file:   colors/dw_orange.vim
-#	new file:   colors/dw_purple.vim
-#	new file:   colors/dw_red.vim
-#	new file:   colors/dw_yellow.vim
-#	new file:   colors/earendel.vim
-#	new file:   colors/eclipse.vim
-#	new file:   colors/ekvoli.vim
-#	new file:   colors/fine_blue.vim
-#	new file:   colors/fine_blue2.vim
-#	new file:   colors/fnaqevan.vim
-#	new file:   colors/fog.vim
-#	new file:   colors/freya.vim
-#	new file:   colors/fruit.vim
-#	new file:   colors/fruity.vim
-#	new file:   colors/golden.vim
-#	new file:   colors/habilight.vim
-#	new file:   colors/impact.vim
-#	new file:   colors/inkpot.vim
-#	new file:   colors/ironman.vim
-#	new file:   colors/jellybeans.vim
-#	new file:   colors/leo.vim
-#	new file:   colors/lucius.vim
-#	new file:   colors/manxome.vim
-#	new file:   colors/marklar.vim
-#	new file:   colors/martin_krischik.vim
-#	new file:   colors/matrix.vim
-#	new file:   colors/metacosm.vim
-#	new file:   colors/moria.vim
-#	new file:   colors/motus.vim
-#	new file:   colors/navajo.vim
-#	new file:   colors/navajo_night.vim
-#	new file:   colors/neon.vim
-#	new file:   colors/neverness.vim
-#	new file:   colors/night.vim
-#	new file:   colors/northland.vim
-#	new file:   colors/nuvola.vim
-#	new file:   colors/oceanblack.vim
-#	new file:   colors/oceandeep.vim
-#	new file:   colors/oceanlight.vim
-#	new file:   colors/olive.vim
-#	new file:   colors/papayawhip.vim
-#	new file:   colors/peaksea.vim
-#	new file:   colors/print_bw.vim
-#	new file:   colors/pyte.vim
-#	new file:   colors/railscasts.vim
-#	new file:   colors/railscasts2.vim
-#	new file:   colors/rdark.vim
-#	new file:   colors/relaxedgreen.vim
-#	new file:   colors/rootwater.vim
-#	new file:   colors/sea.vim
-#	new file:   colors/settlemyer.vim
-#	new file:   colors/sienna.vim
-#	new file:   colors/simpleandfriendly.vim
-#	new file:   colors/spring.vim
-#	new file:   colors/synic.vim
-#	new file:   colors/tabula.vim
-#	new file:   colors/tango.vim
-#	new file:   colors/tango2.vim
-#	new file:   colors/tolerable.vim
-#	new file:   colors/torte.vim
-#	new file:   colors/vc.vim
-#	new file:   colors/vibrantink.vim
-#	new file:   colors/vividchalk.vim
-#	new file:   colors/winter.vim
-#	new file:   colors/wombat.vim
-#	new file:   colors/wombat256.vim
-#	new file:   colors/xemacs.vim
-#	new file:   colors/xoria256.vim
-#	new file:   colors/zenburn.vim
-#	new file:   colortest.vim
-#	new file:   colortest2.vim
-#	new file:   doc/yankring.txt
-#	new file:   ftplugin/changeColorScheme.vim
-#	new file:   ftplugin/ocaml.vim
-#	new file:   ftplugin/python.vim
-#	new file:   ftplugin/tex.vim
-#	new file:   gen_info
-#	new file:   indent/ocaml.vim
-#	new file:   plugin/color_sample_pack.vim
-#	new file:   plugin/yankring.vim
-#	new file:   spell/en.latin1.add
-#	new file:   spell/en.latin1.add.spl
-#	new file:   syntax/c.vim
-#	new file:   syntax/fs.vim
-#	new file:   syntax/html.vim
-#	new file:   syntax/java.vim
-#	new file:   syntax/matlab.vim
-#	new file:   syntax/ocaml.vim
-#	new file:   syntax/python.vim
-#	new file:   syntax/racket.vim
-#	new file:   syntax/thrift.vim
-#	new file:   tmp/.vimrc.tmp,.
-#	new file:   tmp/hello.tmp,.
-#	new file:   vimrc
+#	modified:   .makefile.un~
+#	deleted:    figure.tex
+#	modified:   makefile
+#	renamed:    example.bib -> thesis.bib
+#	renamed:    example.tex -> thesis.tex
 #
-# Changes not staged for commit:
-#   (use "git add <file>..." to update what will be committed)
-#   (use "git checkout -- <file>..." to discard changes in working directory)
-#   (commit or discard the untracked or modified content in submodules)
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
 #
-#	modified:   bundle/vim-racket (modified content, untracked content)
-#
+#	../.TODO.txt.un~
+#	./
