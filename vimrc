@@ -13,6 +13,12 @@ set ignorecase
 set smartcase
 let mapleader=","
 
+
+"yankring
+nnoremap <silent> <F3> :YRShow<cr>
+inoremap <silent> <F3> <ESC>:YRShow<cr>
+
+"Fix search
 nnoremap / /\v
 vnoremap / /\v
 nnoremap <leader><space> :noh<cr>
