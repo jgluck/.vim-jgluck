@@ -37,6 +37,10 @@ call pathogen#runtime_append_all_bundles()
 filetype plugin indent on
 "
 
+if has('gui_running')
+  set guifont=Menlo\ Regular:h12
+endif
+
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
