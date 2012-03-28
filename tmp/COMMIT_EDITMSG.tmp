@@ -2,7 +2,8 @@
 # Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 # On branch master
-# Your branch is behind 'origin/master' by 3 commits, and can be fast-forwarded.
+# Your branch and 'origin/master' have diverged,
+# and have 1 and 3 different commit(s) each, respectively.
 #
 # Changes to be committed:
 #   (use "git reset HEAD <file>..." to unstage)
