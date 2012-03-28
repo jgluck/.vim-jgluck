@@ -1,0 +1,682 @@
+
+(* This is the last lab assignment of the semester.  After the next
+  exam (Friday, April 6), we will begin the final project working on a
+  meta-circular interpreter of Racket (in Racket, not F#).
+
+   This is almost certainly the most complex assignment of the
+   semester, so if you've thought about working with a partner before
+   but have not yet done so, this might be a good time to do so.
+
+   PREREQUISITES
+   -------------
+
+   There are two prerequisites before you can begin this assignment:
+   
+   1. You need to understand how F# does pattern matching and how
+   discriminated unions work.
+
+   You should look at the Wikibooks F# reference on pattern matching:
+
+   http://en.wikibooks.org/wiki/F_Sharp_Programming/Pattern_Matching_Basics
+
+   and the reference on discriminated unions:
+
+   http://en.wikibooks.org/wiki/F_Sharp_Programming/Discriminated_Unions
+
+   OCaml is extremely similar to F# -- so similar that just about any
+   OCaml reference would be just as helpful as an F# reference.  OCaml
+   uses "recursive types" to describe F# "discriminated unions".  You
+   should consider skimming all of Chapter 2:
+
+   http://caml.inria.fr/pub/docs/oreilly-book/html/book-ora016.html
+
+   Or jump right to the most relevant content:
+
+   http://caml.inria.fr/pub/docs/oreilly-book/html/book-ora016.html#toc18
+
+   You will need to be able to write functions that use pattern
+   matching.  You need to be able to understand what discriminated
+   unions/recursive types are.  You will not have to write your own
+   discriminated unions/recursive types.
+
+   As practice, reimplement question 2, 4, and 6 from Lab #7 using
+   pattern matching as much as possible.  You should be able to
+   implement each of these without any if statements; #4 can be done
+   using either a 'when' guard or a short-circuiting ||; #6 is most
+   cleanly done with a 'when' guard'.
+
+   2. You need to download the PDF of "Principles of Programming
+   Languages" (Grant, Palmer and Smith) which is available online here
+   (link also on the class web page):
+
+   http://www.cs.jhu.edu/~scott/pl/book/dist/
+
+   You may quickly skim Chapter 1 if you would like, but you *must*
+   read Chapter 2 through the end of Section 2.3.3 (pages 5-31).
+   (NOTE: The page numbers correspond to the PDF version of the text.)
+   In Section 2.3.4, you should skip the first short part on Logical
+   Combinators (bottom of 31) but then read the subsections labeled
+   "Tuples", "Lists", "Functions with Multiple Arguments" and "The Let
+   Operation" (top of 32-top of 35).
+
+   A good strategy is to skim through the text quickly once, then read
+   the exercises, the go back and read the text more closely so that you 
+   can effectively answer each question.
+   
+   OUR GOAL
+   --------
+   
+   In this assignment, we will work with the toy programming language
+   called F-flat (I'll write that as "Fb") that is developed in
+   Chapter 2 of "Principles of Programming Languages".
+
+   We will begin by defining the "Fb Syntax" (page 18).  From there,
+   we will build an evaluator -- and the necessary supporting
+   functions -- that implements the "Operational Semantics of Fb"
+   (page 23).  We will write some simple functions in the abstract
+   syntax of Fb (such as summation and fibonacci), demonstrating that
+   our evaluator works correctly.  Finally, we will write some
+   additional functions (without extending the language) so that we
+   can represent pairs and lists -- testing these functions with a few
+   more simple functions (such as length and sum).
+
+   Throughout this file, any page numbers I refer to are from the
+   "Principles of Programming Language" book.
+
+
+   WORKING WITH F#
+   ---------------
+
+   As you may have noticed from the last lab, working with OCaml
+   can be frustrating.  When you run your code with this command,
+   
+   fsi --gui- --use:fflat.fs
+
+   most errors will be shown as the very last line of the output, and
+   the line where you can find the error will be indicated.  Note that
+   some errors and warnings will still be interspersed in the output:
+   you should track down and eliminate all warnings.
+
+   GOOD LUCK
+   ---------
+
+   I fully expect (many/most/some/all of) you to be utterly confused!
+   I'm here to help, so if you're stuck, come find me! 
+
+*)
+
+
+
+
+
+(* 
+   Abstract Syntax:
+
+   We begin by copying the abstract syntax shown on page 41. (You
+   didn't need to read this far in the book.)
+*)
+
+
+type ident = Ident of string;;
+type expr =
+    Var of ident | Function of ident * expr | Appl of expr * expr
+  | LetRec of ident * ident * expr * expr
+  | Plus of expr * expr | Minus of expr * expr | Equal of expr * expr 
+  | And of expr * expr | Or of expr * expr | Not of expr 
+  | If of expr * expr * expr | Int of int | Bool of bool;;
+
+
+(*
+  Exercise 1.
+
+  Pages 12-14 give many example converting concrete syntax into
+  abstract syntax.  Convert the following conrete syntax expressions
+  into abstract syntax.  Your answers should be interpretable by F#
+  as being of the type 'expr' which we just defined above.  At the end
+  of the block quote, I provide the answer to 1a.
+
+  1a. Subtract 1 from x:
+
+  x - 1;;  
+
+  
+  1b. Subtract 1 from 10 using a function:
+
+  (fun x -> x - 1) 10;;  
+
+  1c. If z = 0, evaluate to x, else y:
+
+  fun x -> fun y -> fun z -> if z = 0 then x else y;;  
+
+*)
+
+// 1a - SOLUTION PROVIDED
+Minus(Var(Ident("x")), Int(1));;
+
+// 1b
+
+Appl(Function(Ident("x"),Minus(Var(Ident("x")), Int(1))),10)
+
+// 1c
+
+  Function(Ident("x"),Function(Ident("y"),Function(Ident("z"),
+          If(Equal(Var(Ident("z")),Int(0)),(Var(Ident("x"))),(Var(Ident("y")))))))
+
+
+
+(* 
+   In the above exercises, you had to type Ident("x") and Var(Ident("x"))
+   more than once.  You will continue to have to type similar expressions
+   over and over throughout the assignment, and this will get tiring quickly.
+   Instead, we will define two shortcut functions, i and v, which should
+   be self explanatory, but you can certainly try them out.  
+*)
+
+let i s = Ident(s);;         // abbreviation for identifiers 
+let v s = Var(Ident(s));;    // abbreviation for variables
+
+(* 
+   One nice thing about the F# parser is that when it is clear from
+   context, you are allowed to omit spaces between the function name
+   and the parameter.  So, to write Ident("x"), you can just write
+   i"x", and to write Var(Ident("x")), you can just write v"x".
+*)
+
+
+(*
+  Exercise 2.
+
+  Definition 2.8 (page 20) defines Free Occurrence.  This is a very
+  important concept and one that you will need to use in order to get
+  your Fb evaluator to work properly.
+
+  You will write a function called occursFree which takes two
+  parameters, an expression (expr) and an indentifier (ident), and
+  returns true if the identifier occurs free in the expression, or
+  false otherwise.
+
+  For example, the following, taken from example 2.6 in the text, tests
+  whether or not x occurs free in Function x -> x + 1:
+
+  occursFree (Function(i"x",Plus(v"x",Int 1))) (i"x");;  // false 
+
+  Taken from example 2.7, this tests whether or not z occurs free in
+  Function x -> Function y -> x + y + z:
+
+  occursFree 
+    (Function(i"x",Function(i"y",Plus(v"x",Plus(v"y",v"z")))))
+    (i"z");;   // true 
+
+  Here is an example of occursFree with a Let Rec expression, adapted
+  from the example on page 27:
+
+  occursFree
+    (LetRec(i"f",
+            i"x",
+            If(Equal(v"x",v"y"),
+               Int(1),
+               Plus(Appl(v"f", Minus(v"x",Int(1))), v"x")),
+            Appl(v"f", Int(5))))
+    (i"x");;   // false 
+
+  Replacing (i"x") with (i"f") should also return false; replacing
+  with (i"y") should return true.
+
+  TIP: You should be able to write this function making judicious use
+  of pattern matching, avoiding if statements.  In fact, pattern
+  matching will make this function much easier to write than if you
+  try to use if statements.
+*)
+
+
+(* STUB *)
+let rec occursFree expr ide =
+  false;;  // you write this 
+
+
+
+(*
+  Exercise 3.
+
+  Definition 2.9 (page 21) defines Closed Expression.  This is another
+  important concept that you will need to use (and understand) in
+  order to get your Fb evaluator to work properly.
+
+  You will write a function called isClosed which takes one parameter,
+  an expression, and returns true if the expression is closed; false
+  otherwise.
+
+  The definition says: "An expression e is closed if it contains no
+  free variable occurrences."  To implement isClosed, we will first
+  make a list of all the variables in the expression e.  For each
+  variable in this list, we will ask whether or not it occursFree in
+  e.  If none of these variables occursFree in e, isClosed will return
+  true; otherwise, it returns false.
+
+  -------
+
+  Exercise 3(a)
+
+  To solve this, we will first write listOfIds which will take an
+  expression expr as a parameter and return a list of identifiers
+  which occur in expr.  Do not worry about having the same identifier
+  appearing multiple times in this list.
+
+  For example:
+
+  listOfIds(Function(i"x",Plus(v"y",Int 5)));;
+  // returns: [Ident "x"; Ident "y"]
+
+  listOfIds(Function(i"x",Plus(v"x",v"x")));;
+  // returns: [Ident "x"; Ident "x"; Ident "x"] 
+
+*)
+
+
+
+(* STUB *)
+let rec listOfIds expr =
+  [];;  // you write this
+
+
+
+(*
+  Exercise 3(b) 
+
+  Now that we have a list of all the identifiers in the expression, we
+  want to write a function which takes an expression and a list of
+  identifiers as parameters and returns true if none of the
+  identifiers occursFree in the expression.  This function, checkIds,
+  is stubbed below.
+*)
+
+
+(* STUB *)
+let rec checkIds e lst =
+   true;; // you write this
+
+
+
+(*
+  Exercise 3(c)
+
+  Finally, we can write isClosed.  Recall that an expression e is
+  closed if none of the identifiers in e occur free in e.  You should
+  be able to write the definition of isClosed in one line, making use
+  of the checkIds function you wrote in 3(b).  Here are some examples:
+
+  isClosed(Function(i"x",Plus(v"x",Int 5)));;  // true 
+  isClosed(Function(i"x",Plus(v"x",v"y")));;   // false 
+
+*)
+
+
+(* STUB *)
+let isClosed e = 
+  true;; // you write this
+
+
+
+
+(* 
+   Exercise 4.
+
+   Definition 2.10 (page 21) defines Variable Substitution. This
+   describes a procedure to replace all free occurrences of a specific
+   variable (x) in one expression (e) with another expression (e').
+   You will write a function which performs this substitution.
+
+   This function, called subst, takes three parameters, e, e' and x.
+   (NOTE: e' is a legal variable name in F#.)  This function returns a
+   new expression with the appropriate substitutions performed.
+
+   "The variable substitution of x for e' in e, denoted e[e'/x], is
+   the expression resulting from the operation of replacing all free
+   occurrences of x in e with e'."
+
+   The inductive definition of substitution listed on page 21 is
+   complete enough for you to able to complete the subst function, but
+   you may find this additional information helpful.  Pay close attention
+   to the variable names in each row:
+
+   (LetRec f x = e1 in e2)[v/f] = (LetRec f x = e1 in e2)
+   (LetRec f x = e1 in e2)[v/x] = (LetRec f x = e1 in e2[v/x])
+   (LetRec f x = e1 in e2)[v/y] = (LetRec f x = e1[v/y] in e2[v/y]) {y!=f,y!=x}
+
+   One final note before you begin: we don't want to assume that e' is
+   a closed expression (as stated in Definition 2.10) -- we want to
+   ensure that e' is a closed expression before we go ahead with the
+   substitution.  So, the real work of implementing this function will
+   be implementing the helper function subhelp shown below.  I have
+   filled in the necessary code to ensure that e' is a closed
+   expression.
+   
+
+*)
+
+exception NotClosed;;
+
+(* STUB *)
+let rec subst e e' x =
+  let rec subhelp expr = 
+    expr // you write this
+  in
+    if not (isClosed e')  // these next three lines should stay unchanged
+    then raise NotClosed
+    else subhelp e;;
+
+
+ 
+//   Here are some tests you can run (uncomment first) on your subst
+//   function:
+
+(*
+subst (v"x") (Int 5) (i"x");;   // Int 5 
+subst (v"y") (Int 5) (i"x");;   // Var (Ident "y") 
+subst (Int 2) (Int 5) (i"x");;  // Int 2 
+
+// nothing changes here because 'x' is not free in this expression
+subst (Function(i"x", Plus(v"x", Int 1))) (Int 5) (i"x");; 
+
+// 'x' is free in this expression, so v"x" becomes Int 5 
+subst (Function(i"y", Plus(v"x", Int 1))) (Int 5) (i"x");; 
+
+let a = LetRec(i"f", i"x", v"x", Appl(v"f",v"y"));;
+subst a (Int 5) (i"x");;   // unchanged 
+let a = LetRec(i"f", i"x", v"x", Appl(v"f",v"y"));;
+subst a (Int 5) (i"y");;   // v"y" becomes Int 5 
+*)
+
+//   End of tests.
+
+
+
+(*
+  Exercise 5.
+
+  In this exercise you will write the evaluator.  The evaluator will
+  follow the operational semantics for Fb (discussion begins page 23,
+  summary on page 29) exactly.  There are no tricks.  If you can
+  implement the rules listed in 2.3.3 (plus a few type checks) you're
+  done with the evaluator!  Start with the easy ones first (Int and
+  Bool) and test to be sure it works.  Handle one expression type at a
+  time using one pattern at a time, testing as you go.
+
+  Two important notes:
+  1. And and Or are **not** short-circuiting.  Implement them as
+  specified -- do not implement short-circuiting versions.
+  2. Equal only tests for equality between two Ints (top of p. 25)
+
+  Whenever you are trying to evaluate an expression which yields some
+  kind of type mismatch, you need to raise an exception.  (See subst
+  for an example of how to do this.)  For example, evaluating this
+  expression will yield a TypeMismatchPlus exception since the second
+  argument of the Plus expression is not an Int:
+
+  Plus(Int 2, Bool true);;
+
+  Below are the exceptions you should raise with some helpful notes
+  next to them.
+*)
+
+
+exception TypeMismatchAppl;;  // Appl(e1,e2): e1 must evaluate to a Function 
+exception TypeMismatchPlus;;  // Plus(e1,e2): e1 and e2 must evaluate to Ints 
+exception TypeMismatchMinus;; // Minus(e1,e2): e1 and e2 must evaluate to Ints 
+exception TypeMismatchEqual;; // Equal(e1,e2): e1 & e2 must evaluate to Ints 
+exception TypeMismatchOr;;    // Or(e1,e2): e1 & e2 must evaluate to Bool 
+exception TypeMismatchNot;;   // Not(e1): e1 must evaluate to Bool 
+exception TypeMismatchAnd;;   // And(e1,e2): e1 & e2 must evaluate to Bool 
+exception TypeMismatchIf;;    // If(e1,e2,e3): e1 must evaluate to a Bool
+exception TypeMismatchApply;; // Appl(e1,e2): e1 must evaluation to a Function
+
+(* STUB *)
+let rec eval expr = 
+  Bool(false);;  // you write this
+
+
+// Some tests - you can work the answers out on your own 
+
+(*
+eval (Not(Bool(true)));;  
+eval (Not(Bool(false)));;
+
+eval (And(Bool(true), Bool(true)));;
+eval (And(Bool(false), Bool(true)));;
+eval (And(Bool(true), Bool(false)));;
+eval (And(Bool(false), Bool(false)));;
+
+eval (Or(Bool(true), Bool(true)));;
+eval (Or(Bool(false), Bool(true)));;
+eval (Or(Bool(true), Bool(false)));;
+eval (Or(Bool(false), Bool(false)));;
+eval (Plus(Int(3), Int(5)));;  // 8
+eval (If(Bool(false), Int(3), Int(5)));;  // 5
+eval(Appl(Function(i"x", Plus(v"x",Int 1)), Int 3));;  // 4
+*)
+
+// Some less obvious tests 
+
+(*
+// from page 23
+let expr =  
+  LetRec(i"f", i"x", If(Equal(v"x",Int 1),
+                          Appl(Function(i"z", Appl(v"z",Minus(v"x",Int 1))),
+                               Function(i"y", v"y")),
+                          Appl(v"f",Minus(v"x",Int 1))),
+         Appl(v"f",Int 100));;
+
+eval expr;;   //evaluates to 0
+*)
+
+
+
+// define the function 'times' which multiplies two Ints:
+(*
+let times =  
+  LetRec(i"times", 
+         i"x",
+         Function(i"y", If(Equal(v"x",Int 1), 
+                           v"y", 
+                           Plus(v"y", Appl(Appl(v"times", Minus(v"x",Int 1)), 
+                                           v"y")))),
+         v"times");;
+
+eval (Appl(Appl(times, Int 3), Int 4));;  // apply 'times' to 3 and 4
+*)
+
+
+
+(* 
+
+   ***************************************************************
+   Congratulations.  You made it through the hard part.  Hopefully
+   things will be easier from here to the end.
+
+   Exercise 6(a).
+
+   Implement (in Fb) the function summation(n) which sums the first n
+   integers using recursion where the base case is summation(0) = 0
+   and the recursive step is summation(n) = n + summation(n-1).
+
+   Test (using eval) on a couple of values of n (greater than or equal
+   to 0).
+*)
+
+
+(* STUB *)
+let summation =
+    LetRec(i"summation",
+           i"n",
+           Int 0,
+           v"summation");;
+    
+
+// Uncomment this once you've written summation:
+// eval(Appl(summation, Int 10));;  (* 55 *) 
+
+
+
+(* 
+   Exercise 6(b).
+
+   Implement (in Fb) the function fibonacci(n) which computes the nth
+   fibonacci number.  fibonacci(0) is 0 and fibonacci(1) is 1.  The
+   recursive step defines: fibonacci(n) = fibonacci(n-1) +
+   fibonacci(n-2). (This is the slow version - be sure not to try this
+   on large values of n.)
+
+   Test (using eval) for a few (smallish) values of n (greater than or
+   equal to 0).
+*)
+
+
+(* STUB *)
+let fib =
+    LetRec(i"fib",
+           i"n",
+           Int 0,
+           v"fib");;
+    
+
+// Uncomment this once you've written fib:
+// eval(Appl(fib, Int 10));;  // fib(10) = 55 
+
+
+
+
+(*
+
+   Below, we begin by implementing tuples (as described on p.32-33) as
+   well as the functions left and right which operate on tuples.  You
+   will not need to -- and you should not, unless you discover a bug --
+   change any code you have already written above to make this work.
+   There is nothing you need to implement until you get to Exercise
+   7(a) below, but you should uncomment the tests and be sure that
+   they work before continuing
+
+   This code is a direct translation of the concrete syntax for pr (at
+   the top of page 33) followed by a translation of left and right
+   (middle of page 32):
+*)
+
+let pr (e1,e2) =
+  Appl(
+    Appl(
+      Function(i"e1", 
+               Function(i"e2", 
+                        Function(i"x", 
+                                 Appl(Appl(v"x",e1),e2)))), e1), e2);;
+
+let left e = Appl(e, Function(i"x", Function(i"y", v"x")));;
+let right e = Appl(e, Function(i"x", Function(i"y", v"y")));;
+
+
+// Example pairs -- uncomment to test 
+(*
+let mypair = pr ((Int 5), (Int 7));;
+let lft = left mypair;;
+eval lft;; // Int 5
+let rght = right mypair;; 
+eval rght;; // Int 7
+*)
+
+
+// Then we implement Lists as described on page 34
+
+let cons (x,y) = pr(pr(Bool false, x), y);;
+let emptylist = pr(pr(Bool true, Int 0), Int 0);;
+let head x = right(left x);;
+let tail x = right x;;
+let isempty l = (left (left l));
+
+(* you may appreciate using these *)
+let car x = head x;;
+let cdr x = tail x;;
+let nll = emptylist;;  //'null' is a reserved word in F#
+
+// Test list -- uncomment to test
+(*
+let aList = 
+  cons (Int 1, cons(Plus(Int 2,Int 1), cons(Int 5, nll)));;
+
+eval (car aList);;                // 1
+eval (car (cdr aList));;          // 3
+eval (car (cdr (cdr aList)));;    // 5
+*)
+
+
+(* 
+   Exercise 7(a)
+
+   Write (in Fb) and test (using eval) the length
+   function which is given in concrete syntax on page 34. 
+*)
+
+
+(* STUB *)
+let length =
+    LetRec(i"len",
+           i"x",
+           Int 0,
+           v"len");;
+    
+
+// Uncomment this once you've written length
+// eval (Appl(length, aList));;      // 3
+
+
+(* 
+   Exercise 7(b)
+
+   Write (in Fb) the function enumerate in abstract syntax.  Once
+   you've written it, you should be able to write this:
+
+   let lst10 = eval(Appl(enumerate, Int 10));;
+
+   and lst10 will be a list of the numbers 0->10 written in Fb syntax.  
+   You'll see that lst10 is pages and pages of functions!
+   But, you can car and cdr it to your heart's content:
+
+   eval(car lst10);;      // 0
+   eval(car(cdr lst10));; // 1
+   ...
+   eval(car(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr(cdr lst10)))))))))));; //10
+*)
+
+(* STUB *)
+let enumerate =
+    LetRec(i"enumerate",
+           i"x",
+           Int 0,
+           v"len");;
+
+
+// uncomment this once you've written enumerate
+// let lst10 = eval(Appl(enumerate, Int 10));;
+
+
+
+
+(* 
+   Exercise 8.
+
+   Choose zero or more of the following.  I suspect most of you won't
+   try these, but if you want an extra challenge:
+
+   a. (Medium) Write two functions: one which converts a list in Fb to
+   an F# list, and one which converts an F# list into a list in
+   Fb.  Useful for testing things in Fb.
+
+   b. (Medium-Difficult) Write (in Fb) any of questions 2-8 from lab 3
+   (higher order functions) and test (using eval).
+
+   c. (Difficult) Add Let to the language by adding this line to the
+   abstract syntax (see page 23).
+
+   | Let of ident * expr * expr
+
+   and then update occursFree, listOfIds, subst and eval.  
+
+*)
+

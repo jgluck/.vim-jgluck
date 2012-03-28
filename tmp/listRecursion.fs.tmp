@@ -1,0 +1,317 @@
+
+(* SPECIAL DUE DATE: BEFORE CLASS ON WEDNESDAY, MARCH 28 *)
+
+(*
+ * Using lists with recursion and iteration
+ * 
+ * There are a total of 12 questions below.  The first 9 questions
+ * require a recursive process solution.  The final 3 questions require
+ * an iterative process solution.
+ * 
+ * You can assume that each of the functions will be called with
+ * arguments of the proper data type (e.g. a list, an integer, etc).
+ * 
+ * You will probably recognize a lot of these questions from a previous
+ * Racket lab.  These questions are meant to serve as practice in F#
+ * and you are welcome to refer to any Racket solutions to help you out.
+ *
+ * Write your solutions in this file.  You can copy and paste your 
+ * solutions from this file into the 'fsi' (or 'fsi.exe --gui-') 
+ * command-line interface.  You can also run 
+ * 'fsi.exe --gui- --use:listRecursion.fs' 
+ * to run the entire file if you'd like, though that may be less
+ * helpful than just copying and pasting as you go along.
+ *)
+
+let mutable results = List.empty<string>;; (* DO NOT MODIFY THIS LINE *)
+
+(*
+ 1. Write a function called sum_list that takes a list of numbers
+ lst and returns the sum of all the numbers in lst.  Return 0 if the
+ list is empty.
+*)
+
+(* A stub for the sum_list function *) 
+let rec sum_list lst = 
+  match lst with
+   | [] -> 0
+   | _ -> lst.Head + sum_list (lst.Tail);;
+    
+
+(* Tests *)
+results <-
+ results @
+  if sum_list [1; 0; 2; -1; 3] = 5 && sum_list [] = 0 
+  then ["Q1 Passed"] else ["Q1 Failed"];;
+
+(*
+ 2. Write a function called multiply_list that takes a list of
+ numbers lst and returns the product of all the numbers in lst.
+ Return 1 if the list is empty.
+*)
+
+(* A stub for the multiply_list function *) 
+let rec multiply_list lst = 
+  match lst with
+   | []-> 1
+   | _ -> lst.Head * multiply_list (lst.Tail);;
+
+results <-
+ results @
+  if multiply_list [1; 2; -5; 3] = -30 && multiply_list [] = 1 
+  then ["Q2 Passed"] else ["Q2 Failed"]
+
+(*
+ 3. Write a function called xerox that takes an item x and a number
+ n and returns a list containing n copies of x.  If n is 0, xerox
+ returns the empty list.
+*)
+
+(* A stub for the xerox function *) 
+let rec xerox item n = 
+  if (n = 0)
+    then []
+  else item::xerox (item) (n-1);;
+
+results <-
+ results @
+  if xerox "paper" 4 = ["paper"; "paper"; "paper"; "paper"] && 
+     xerox [1; 2; 3] 2 = [[1; 2; 3]; [1; 2; 3]]
+  then ["Q3 Passed"]
+  else ["Q3 Failed"];;
+
+
+(*
+ 4. Write a function called "membr" which tests to see if an
+ element is a member of a list.  You may not use the built-in
+ function "member" in your solution.
+*)
+
+(* A stub for the membr function *) 
+let rec membr item lst = 
+  if (lst = [])
+    then false
+  elif (lst.Head = item)
+    then true
+  else
+    membr item lst.Tail;;
+
+results <-
+ results @ 
+  if (membr 2 [1; 2; 3] = true) &&
+     (membr 4 [] = false) &&
+     (membr 5 [1; 2; 3] = false)
+  then ["Q4 Passed"] else ["Q4 Failed"];;
+
+(*
+ 5. Write a function called "insert_before_first" which inserts an
+ item into a list immediately before the first occurrence of a
+ specified item. 
+*)
+
+(* A stub for the insert_before_first function *) 
+let rec insert_before_first item toinsert lst = 
+  if (lst = [])
+    then []
+  elif (lst.Head = item)
+    then toinsert::lst
+  else
+    lst.Head::insert_before_first item toinsert lst.Tail;;
+
+results <-
+ results @ 
+  if insert_before_first "pod" "pea" ["a"; "green"; "pod"] =
+      ["a"; "green"; "pea"; "pod"] &&
+     insert_before_first "pod" "pea" ["pod"; "pod"; "pod"] = 
+      ["pea"; "pod"; "pod"; "pod"] &&
+     insert_before_first "pod" "pea" ["a"; "green"; "leaf"] = 
+      ["a"; "green"; "leaf"] 
+  then ["Q5 Passed"] else ["Q5 Failed"];;
+
+
+
+(*
+ 6. Write a function called "collapse_first_pair" which locates the
+ first time that the same symbol appears twice in a row and removes
+ one of them.  Be sure to add your own test cases to the one case I
+ am providing you with.
+*)
+
+(* A stub for the collapse_first_pair function *) 
+let rec collapse_first_pair lst = 
+  if (lst =[])
+    then []
+  elif (lst.Length = 1)
+    then [lst.Head]
+  elif (lst.Item 0= lst.Item 1)
+    then lst.Tail
+  else
+    lst.Head:: collapse_first_pair lst.Tail;;
+
+results <-
+ results @ 
+  if collapse_first_pair ["a"; "b"; "c"; "d"; "c"; "c"; "d"; "d"] =
+      ["a"; "b"; "c"; "d"; "c"; "d"; "d"]
+  then ["Q6 Passed"] else ["Q6 Failed"];;
+
+
+(*
+ 7. Write a function called "collapse_all_pairs" which collapses all
+ pairs found in a list.  It should not use the collapse_first_pair
+ function you wrote above as part of the solution.
+*)
+
+(* A stub for the collapse_all_pairs function *) 
+let rec collapse_all_pairs lst = 
+  if (lst = [])
+    then []
+  elif(lst.Length =1)
+    then [lst.Head]
+  elif (lst.Item 0 = lst.Item 1)
+    then collapse_all_pairs lst.Tail
+  else
+    lst.Head:: collapse_all_pairs lst.Tail;;
+
+results <-
+ results @
+  if collapse_all_pairs ["a";"b";"b";"b";"c";"c";"c";"d";"d";"e";"f";"f"] =
+      ["a"; "b"; "c"; "d"; "e"; "f"] 
+  then ["Q7 Passed"] else ["Q7 Failed"];;
+
+
+(*
+ 8. Write a function called swap that takes a symbol x, a symbol y,
+ and a list and returns a new list with all occurrences of x
+ replaced by y and all occurrences of y replaced by x.
+*)
+
+(* A stub for the swap function *) 
+let rec swap x y lst = 
+  if (lst = [])
+   then []
+  elif (lst.Head = x)
+    then y::swap x y lst.Tail
+  elif (lst.Head = y)
+    then x::swap x y lst.Tail
+  else
+    lst.Head::swap x y lst.Tail;;
+
+results <-
+ results @ 
+  if swap "red" "blue" ["red";"fish";"blue";"fish";"red"]  = 
+      ["blue"; "fish"; "red"; "fish"; "blue"] 
+  then ["Q8 Passed"] else ["Q8 Failed"];;
+
+
+(*
+ 9. Write a function called list_replace that takes a list of pairs
+ and a list and returns a new list with the first element of each
+ pair replaced by the second element of each pair.  This problem is
+ more difficult than it may initially seem.  Be sure your function
+ can handle both test cases below.  (The second test case is the
+ harder one.)
+*)
+
+(* A stub for the list_replace function *) 
+  let rec list_replace pairlst lst = 
+    let rec list_replace_helper item pairlst =
+      if (pairlst = [])
+        then item
+      elif (List.head (List.head pairlst) = item)
+        then ((pairlst.Head).Item 1)
+      else
+        list_replace_helper item (List.tail pairlst)
+    if (lst = [])
+      then []
+    else
+      list_replace_helper lst.Head pairlst :: list_replace pairlst (List.tail lst);;
+
+
+
+results <-
+ results @ 
+  if list_replace 
+      [["carrots"; "peas"]; ["fork"; "spoon"]]
+       ["eat"; "your"; "carrots"; "with"; "a"; "fork"] = 
+      ["eat"; "your"; "peas"; "with"; "a"; "spoon"] &&     
+     list_replace
+      [["carrots"; "peas"]; ["peas"; "potatoes"]]
+       ["eat"; "your"; "carrots"; "and"; "peas"] =
+      ["eat"; "your"; "peas"; "and"; "potatoes"]
+  then ["Q9 Passed"] else ["Q9 Failed"];;
+
+
+(*
+ 10. Rewrite the xerox function from Question 5 as an iterative
+ process solution (rather than a recursive process solution).
+*)
+
+(* A stub for the xerox_iter function *) 
+let rec xerox_iter item n= 
+  let rec xerox_helper n acc=
+    if (n = 0)
+      then acc
+    else xerox_helper (n-1) (item::acc)
+  xerox_helper n [];;
+   
+results <-
+ results @
+  if xerox_iter "paper" 4 = ["paper"; "paper"; "paper"; "paper"] &&
+     xerox_iter [1; 2; 3] 2 = [[1; 2; 3]; [1; 2; 3]]
+  then ["Q10 Passed"] else ["Q10 Failed"];;
+
+(*
+ 11. Rewrite the sum_list function from Question 5 as an iterative
+ process solution. 
+*)
+
+(* A stub for the sum_list_iter function *) 
+let rec sum_list_iter lst = 
+  let rec sum_list_helper lst2 acc=
+    if (lst2 = [])
+      then acc
+    else
+      sum_list_helper lst2.Tail (acc+lst2.Head)
+  sum_list_helper lst 0;;
+
+results <-
+ results @
+  if sum_list_iter [1; 0; 2; -1; 3] = 5 &&
+     sum_list_iter [] = 0 
+  then ["Q11 Passed"] else ["Q11 Failed"];;
+
+
+(*
+ 12. Rewrite the swap function from Question 8 as an iterative
+ process solution.  You should write your own reverse function.
+ For reference, the built-in reverse function is List.rev
+*)
+
+(* A stub for the swap_iter function *) 
+let rec swap_iter x y lst = 
+  let rec lstr lst2 acc = 
+    if (lst2 = [])
+      then acc
+    else
+      lstr lst2.Tail (lst2.Head::acc)
+  let rec swap_help lst2 acc =
+    if (lst2 = [])
+      then acc
+    elif (lst2.Head = x)
+      then (swap_help (lst2.Tail) (y::acc))
+    elif (lst2.Head = y)
+      then (swap_help (lst2.Tail) (x::acc))
+    else
+      (swap_help (lst2.Tail) (lst2.Head::acc))
+  (lstr (swap_help lst []) []);;
+
+
+results <-
+ results @ 
+  if swap_iter "red" "blue" ["red";"fish";"blue";"fish";"red"]  = 
+      ["blue"; "fish"; "red"; "fish"; "blue"] 
+  then ["Q12 Passed"] else ["Q12 Failed"];;
+
+
+(* Test results *)
+ignore (List.map (printfn "%s") results);;
