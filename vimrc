@@ -9,14 +9,16 @@ colorscheme 3dglasses
 "How I came home to vim
 set nocompatible
 set modelines=0
-set relativenumber
-set undofile
 set ignorecase
 set smartcase
 let mapleader=","
+
+nnoremap / /\v
+vnoremap / /\v
 nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
 vnoremap <tab> %
+
 
 "linewrapping
 set wrap
@@ -29,8 +31,36 @@ au FocusLost * :wa
 nnoremap <silent> <F3> :YRShow<cr>
 inoremap <silent> <F3> <ESC>:YRShow<cr>
 
-"pathogen
-call pathogen#infect()
+" enable file type detection:
+filetype off
+call pathogen#runtime_append_all_bundles()
+filetype plugin indent on
+"
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set encoding=utf-8
+set scrolloff=3
+set autoindent
+set showmode
+set showcmd
+set hidden
+set wildmenu
+set wildmode=list:longest
+set visualbell
+set cursorline
+set ttyfast
+set ruler
+set backspace=indent,eol,start
+set laststatus=2
+set relativenumber
+set undofile
+
+
+set list
+set listchars=tab:▸\ ,eol:¬
 
 " Days of week.
  iab monday     Monday
@@ -50,11 +80,31 @@ set backspace=2
 
 "spelling
 set spell
+nnoremap <leader>s :setlocal spell!
+
+"Open vimrc in vert window
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+
+"split and switch
+nnoremap <leader>w <C-w>v<C-w>l
+
 " auto backups
 set backup
 " backup file name extension
 set backupext=.tmp
 set backupdir=~/.vim/tmp
+
+
+
+"Rehardwrap [aragraph
+nnoremap <leader>q gqip
+
+
+
+"fix help key
+inoremap <F1> <ESC>
+nnoremap <F1> <ESC>
+vnoremap <F1> <ESC>
 
 
 " no autowrap of lines
@@ -73,16 +123,11 @@ set showmode
 set showcmd
 "
 " use indents of 2 spaces, and have them copied down lines:
-set shiftwidth=2
 set shiftround
 set expandtab
 set autoindent
 "
-" enable file type detection:
-filetype on
-filetype indent on
-filetype plugin on
-"
+
 " in human-language files, automatically format everything at 72 chars:
 autocmd FileType mail,human set formatoptions+=t textwidth=72
 

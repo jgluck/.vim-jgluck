@@ -476,5 +476,5 @@ if version >= 508 || !exists("did_racket_syntax_inits")
   HiLink racketExtFunc            PreProc
   delcommand HiLink
 endif
-
+runtime plugin/RainbowParenthsis.vim 
 let b:current_syntax = "racket"
