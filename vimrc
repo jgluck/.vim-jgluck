@@ -33,9 +33,13 @@ set formatoptions=qrn1
 set colorcolumn=85
 au FocusLost * :wa
 
-
+"YR
 nnoremap <silent> <F3> :YRShow<cr>
 inoremap <silent> <F3> <ESC>:YRShow<cr>
+
+"RAINBOW
+nnoremap <leader>rr :ToggleRaibowParenthesis<cr>
+inoremap <leader>rr <ESC>:ToggleRaibowParenthesis<cr>
 
 " enable file type detection:
 filetype off
