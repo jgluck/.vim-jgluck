@@ -376,5 +376,6 @@ if version >= 508 || !exists("did_fs_syntax_inits")
 endif
 
 let b:current_syntax = "fs"
+runtime Rainbow-Parenthsis/syntax/RainbowParenthesis.vim 
 
 " vim: ts=8
