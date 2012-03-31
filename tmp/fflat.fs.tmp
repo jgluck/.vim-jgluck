@@ -231,7 +231,9 @@ let v s = Var(Ident(s));;    // abbreviation for variables
 
 (* STUB *)
 let rec occursFree expr ide =
-  false;;  // you write this 
+  match expr with 
+  |x -> false
+  |Function(ident,inner) -> (occursFree (expr.Tail) ide);;  // you write this 
 
 
 
