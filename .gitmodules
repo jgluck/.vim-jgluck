@@ -10,3 +10,12 @@
 [submodule "Rainbow-Parenthesis"]
 	path = Rainbow-Parenthesis
 	url = git://github.com/vim-scripts/Rainbow-Parenthesis.git
+[submodule "bundle/nerdtree"]
+	path = bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "bundle/nerdcommenter"]
+	path = bundle/nerdcommenter
+	url = git://github.com/scrooloose/nerdcommenter.git
+[submodule "bundle/Rainbow-Parenthesis"]
+	path = bundle/Rainbow-Parenthesis
+	url = https://github.com/vim-scripts/Rainbow-Parenthsis-Bundle.git

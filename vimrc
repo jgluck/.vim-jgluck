@@ -13,6 +13,12 @@ set ignorecase
 set smartcase
 let mapleader=","
 
+
+"yankring
+nnoremap <silent> <F3> :YRShow<cr>
+inoremap <silent> <F3> <ESC>:YRShow<cr>
+
+"Fix search
 nnoremap / /\v
 vnoremap / /\v
 nnoremap <leader><space> :noh<cr>
@@ -27,15 +33,25 @@ set formatoptions=qrn1
 set colorcolumn=85
 au FocusLost * :wa
 
-
+"YR
 nnoremap <silent> <F3> :YRShow<cr>
 inoremap <silent> <F3> <ESC>:YRShow<cr>
+
+"RAINBOW
+nnoremap <leader>rr :ToggleRaibowParenthesis<cr>
+inoremap <leader>rr <ESC>:ToggleRaibowParenthesis<cr>
 
 " enable file type detection:
 filetype off
 call pathogen#runtime_append_all_bundles()
+call pathogen#infect()
+call pathogen#helptags()
 filetype plugin indent on
 "
+
+if has('gui_running')
+  set guifont=Menlo\ Regular:h12
+endif
 
 set tabstop=4
 set shiftwidth=4
