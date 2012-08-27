@@ -1,5 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_cnt =4
 let g:netrw_dirhist_1='/local/jgluck1/fawnkv/misc/tweetdb/tweets'
 let g:netrw_dirhist_2='/local/epadget1/ellion/JonElliot/linux-2.6.32.44/include/asm-generic'
 let g:netrw_dirhist_3='/home/jgluck/.homedir/vim'
+let g:netrw_dirhist_4='/Users/jgluck/.homedir/vim/bundle/vim-pad'
