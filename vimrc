@@ -76,7 +76,6 @@ set undofile
 
 
 set list
-set listchars=tab:▸\ ,eol:¬
 
 " Days of week.
  iab monday     Monday
