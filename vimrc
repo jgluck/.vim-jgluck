@@ -104,10 +104,10 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 nnoremap <leader>w <C-w>v<C-w>l
 
 " auto backups
-set backup
+"set backup
 " backup file name extension
-set backupext=.tmp
-set backupdir=~/.vim/tmp
+"set backupext=.tmp
+"set backupdir=~/.vim/tmp
 
 
 
