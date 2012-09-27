@@ -30,7 +30,10 @@ vnoremap <tab> %
 set wrap
 set textwidth=79
 set formatoptions=qrn1
-set colorcolumn=85
+
+if has("colorcolumn")
+    set colorcolumn=85
+endif
 au FocusLost * :wa
 
 "YR
@@ -71,12 +74,14 @@ set ttyfast
 set ruler
 set backspace=indent,eol,start
 set laststatus=2
-set relativenumber
-set undofile
+
+if has("relativenumber")
+    set relativenumber
+endif
+    "set undofile
 
 
 set list
-set listchars=tab:▸\ ,eol:¬
 
 " Days of week.
  iab monday     Monday
@@ -105,10 +110,10 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 nnoremap <leader>w <C-w>v<C-w>l
 
 " auto backups
-set backup
+"set backup
 " backup file name extension
-set backupext=.tmp
-set backupdir=~/.vim/tmp
+"set backupext=.tmp
+"set backupdir=~/.vim/tmp
 
 
 
